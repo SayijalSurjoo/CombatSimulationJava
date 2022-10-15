@@ -7,6 +7,11 @@ public class JavaEnums {
         for (PowerLevel level : PowerLevel.values()){
             System.out.println(level);
         }
+        
+        int power = PowerLevel.SOLDIER.powerLevel;
+        double speed = PowerLevel.SOLDIER.speed;
+        PowerLevel unit = PowerLevel.SOLDIER;
+        System.out.println("The "+unit+" has Attack : "+power+" and Speed : "+speed);
     }
     
 }
