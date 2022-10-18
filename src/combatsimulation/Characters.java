@@ -1,18 +1,17 @@
-
 package combatsimulation;
 
 import java.util.Random;
 
 public enum Characters {
-    HOBBIT(120,50,40,25,5,5),
-    ELVE(200,80,50,70,45,2),
-    DWARF(250,70,70,10,25,2),
-    WARRIOR(200,60,60,25,20,2), 
-    FIGHTER(200,70,60,40,20,2),
-    WIZARD(200,30,50,45,20,2),
-    KNIGHT(200,50,50,30,25,2),
-    ASSASSIN(200,65,30,70,20,2),
-    THIEF(200,40,40,45,20,2);
+    HOBBIT(100,40,30,25,10,8),
+    ELVE(200,85,60,52,60,4),
+    DWARF(220,80,75,10,25,3),
+    WARRIOR(250,100,70,25,50,5), 
+    FIGHTER(200,50,50,30,22,3),
+    WIZARD(180,48,55,41,20,7),
+    KNIGHT(230,70,60,30,25,4),
+    ASSASSIN(180,75,40,45,20,6),
+    HEALER(130,30,50,45,20,2);
     
     //Keep your set values final 
     final int healthPts; 
@@ -20,23 +19,28 @@ public enum Characters {
     final int defensePts;
     final int dexterity;
     final int critChance;
-    final int critMultipler;
+    final int critMultiplier;
     
     //Setup for getting random enum entry
     private static final Random PRNG = new Random();
     private static final Characters[] equipment = values();
     
     public static Characters randomCharacters(){
-
         return equipment[PRNG.nextInt(equipment.length)];
     }
     
+     @Override
+        public String toString() {
+              String str1 = (healthPts+" HP Atk "+attackPts+" Def "+defensePts+" Dex "+dexterity+" Crit Chance "+critChance+"%");
+              return str1;
+        }
+
     Characters (int hp, int atk, int def, int dex, int cc, int cm){
       this.healthPts = hp;
       this.attackPts = atk;
       this.defensePts = def;
       this.dexterity = dex;
       this.critChance = cc;
-      this.critMultipler = cm;
+      this.critMultiplier = cm;
     }
 }
