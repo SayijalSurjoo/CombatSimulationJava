@@ -10,7 +10,7 @@ public class CombatSimulation {
     
 static int enemyHp, enemyAtk, enemyDef, enemyDex, enemyCrit;
 static int level;
-private static final double ENEMYCRITMULTIPLER = 1.5;
+private static final int ENEMYCRITMULTIPLER = 3;
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         System.out.println("Select the level you want from (1-3), higher level means stronger enemies and more equipment");
@@ -50,7 +50,7 @@ private static final double ENEMYCRITMULTIPLER = 1.5;
         
     }
 
-public static void assignEquipment(int hp, int atk, int def, int dex, int cc, double cm, String name){
+public static void assignEquipment(int hp, int atk, int def, int dex, int cc, int cm, String name){
          System.out.println("Your character "+name+" : "+hp+" HP Atk "+atk+" Def "+def+" Dex "+dex+" Crit Chance "+cc+"%");
     for (int i = 1; i <= level; i++){     
          Equipment equip = Equipment.randomEquipment();
@@ -82,7 +82,7 @@ public static void assignEquipment(int hp, int atk, int def, int dex, int cc, do
             }
     }
     System.out.println("Your character "+name+" : "+hp+" HP Atk "+atk+" Def "+def+" Dex "+dex+" Crit Chance "+cc+"%");
-    combat(hp, atk, def, dex, cc, cm);
+    combat(hp, atk, def, dex, cc, cm,0);
   }
     
     public static int getRandomNumber(int min, int max) {
@@ -98,7 +98,7 @@ public static void assignEquipment(int hp, int atk, int def, int dex, int cc, do
         int defense = unit.defensePts;
         int dexterity = unit.dexterity;
         int critPercent = unit.critChance;
-        double critMultipler = unit.critMultipler;
+        int critMultipler = unit.critMultipler;
         String unitName = unit.name();
 
         assignEquipment(health, attack, defense, dexterity, critPercent, critMultipler, unitName);
@@ -134,78 +134,74 @@ public static void assignEquipment(int hp, int atk, int def, int dex, int cc, do
         System.out.println("Enemy : "+enemyHp+" HP Atk "+enemyAtk+" Def "+enemyDef+" Dex "+enemyDex+" Crit "+enemyCrit+"%");
     }
     
-    public static void combat(int hp, int atk, int def, int dex, int cc, double cm){
+    public static void combat(int hp, int atk, int def, int dex, int cc, int cm, int damage){
         int critValue = 0;
-        int damage;
         if (enemyAtk < def && atk < enemyDef){
             System.out.println("Fight DNF");
         }else{
-        while (hp > 0 && enemyHp > 0){   
+            while (hp > 0 && enemyHp > 0){   
 
-            //Enemy gets attacked------------------------------------------------------
-            int dexIndex = getRandomNumber(1,100); 
-            if (dexIndex <= enemyDex){ //Checks if enemy dodged the attack
-                System.out.println("Enemy dodged the attack");
-            }else {
-                //Crit chance and calculation 
-                int critIndex = getRandomNumber(1,100);
-                if (critIndex <= cc){
-                    critValue = (int) cm;
-                    critValue = (atk/2) * critValue;
-                    
-                    System.out.println("You Crit for "+critValue);
-                    
-                 }
-                damage = atk - enemyDef;
-                damage = damage + critValue;
-                if (damage < 0){
-                damage = 0;
-                }
-                enemyHp = enemyHp - damage;
-                System.out.println("Enemy HP remaining "+enemyHp);
-            }
-            
-            if (enemyHp <= 0){
-            System.out.println("Enemy Died");
-            break;
-            }
-
-            //Player gets attacked-----------------------------------------------------------
-            dexIndex = getRandomNumber(1,100); 
-            if (dexIndex <= dex){ //Checks if player dodged the attack
-                System.out.println("You have dodged the attack");
-            }else {
+                //Enemy gets attacked------------------------------------------------------
+                int dexIndex = getRandomNumber(1,100); 
+                if (dexIndex <= enemyDex){ //Checks if enemy dodged the attack
+                    System.out.println("Enemy dodged the attack");
+                }else {
                     //Crit chance and calculation 
                     int critIndex = getRandomNumber(1,100);
-                if (critIndex <= enemyCrit){
-                    critValue = (enemyAtk/2) * (int )ENEMYCRITMULTIPLER;
-                    
-                    System.out.println("Enemy Crit for "+critValue);
-                    
-                 }
-                damage = enemyAtk - def;
-                damage = damage + critValue;
-                if (damage < 0){
+                    if (critIndex <= cc){
+
+                        critValue = (atk/4) * cm;
+
+                        System.out.println("You Crit for "+critValue);
+
+                     }
+                    damage = atk - enemyDef;
+                    damage = damage + critValue;
+                    if (damage < 0){
                     damage = 0;
+                    }
+                    enemyHp = enemyHp - damage;
+                    System.out.println("Enemy HP remaining "+enemyHp);
                 }
-                hp = hp - damage;
-                System.out.println("HP remaining "+hp);
-            }
-            
-            if (hp <= 0){
-                System.out.println("You Died");
+
+                if (enemyHp <= 0){
+                System.out.println("Enemy Died");
                 break;
+                }
+
+                //Player gets attacked-----------------------------------------------------------
+                dexIndex = getRandomNumber(1,100); 
+                if (dexIndex <= dex){ //Checks if player dodged the attack
+                    System.out.println("You have dodged the attack");
+                }else {
+                        //Crit chance and calculation 
+                        int critIndex = getRandomNumber(1,100);
+                    if (critIndex <= enemyCrit){
+                        critValue = (enemyAtk/2) * ENEMYCRITMULTIPLER;
+
+                        System.out.println("Enemy Crit for "+critValue);
+                     }
+                    damage = enemyAtk - def;
+                    damage = damage + critValue;
+                    if (damage < 0){
+                        damage = 0;
+                    }
+                    hp = hp - damage;
+                    System.out.println("HP remaining "+hp);
+                }
+
+                if (hp <= 0){
+                    System.out.println("You Died");
+                    break;
+                }
+               //A round of fists take 1 sec                
+               try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CombatSimulation.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+                critValue = 0;
             }
-           //A round of fists take 1 sec                
-           try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CombatSimulation.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            damage = 0;  
-            critValue = 0;
-        }
         }
     }
 }

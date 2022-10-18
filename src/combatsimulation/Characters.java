@@ -4,7 +4,7 @@ package combatsimulation;
 import java.util.Random;
 
 public enum Characters {
-    HOBBIT(120,50,40,25,5,1.5),
+    HOBBIT(120,50,40,25,5,5),
     ELVE(200,80,50,70,45,2),
     DWARF(250,70,70,10,25,2),
     WARRIOR(200,60,60,25,20,2), 
@@ -20,7 +20,7 @@ public enum Characters {
     final int defensePts;
     final int dexterity;
     final int critChance;
-    final double critMultipler;
+    final int critMultipler;
     
     //Setup for getting random enum entry
     private static final Random PRNG = new Random();
@@ -31,7 +31,7 @@ public enum Characters {
         return equipment[PRNG.nextInt(equipment.length)];
     }
     
-    Characters (int hp, int atk, int def, int dex, int cc, double cm){
+    Characters (int hp, int atk, int def, int dex, int cc, int cm){
       this.healthPts = hp;
       this.attackPts = atk;
       this.defensePts = def;
